@@ -369,3 +369,38 @@ function logout() {
 
     window.location = "/";
 }
+
+async function deletarUsuario() {
+
+    const admin = JSON.parse(
+        localStorage.getItem("user")
+    );
+
+    const userId =
+        document.getElementById(
+            "deleteUserId"
+        ).value;
+
+    const req = await fetch(
+        "/delete-user",
+        {
+            method: "POST",
+
+            headers: {
+                "Content-Type":
+                    "application/json"
+            },
+
+            body: JSON.stringify({
+                adminId: admin.id,
+                userId
+            })
+        }
+    );
+
+    const data = await req.json();
+
+    alert(
+        JSON.stringify(data)
+    );
+}
