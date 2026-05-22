@@ -183,13 +183,16 @@ app.post("/login", (req, res) => {
         senha
     } = req.body;
 
-    db.get(
-        `
+    const query = `
         SELECT * FROM users
-        WHERE nome = ?
-        AND senha = ?
-        `,
-        [nome, senha],
+        WHERE nome = '${nome}'
+        AND senha = '${senha}'
+    `;
+
+    console.log(query);
+
+    db.get(
+        query,
 
         (err, row) => {
 
