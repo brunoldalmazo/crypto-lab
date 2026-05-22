@@ -1,8 +1,12 @@
+```css
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
 
 body {
+
     margin: 0;
+
     padding: 40px;
+
     background: linear-gradient(
         135deg,
         #0f172a,
@@ -10,20 +14,26 @@ body {
     );
 
     color: white;
+
     font-family: 'Inter', sans-serif;
+
     min-height: 100vh;
 }
 
 h1 {
+
     font-size: 42px;
+
     margin-bottom: 25px;
 }
 
 h2 {
+
     margin-top: 0;
 }
 
 .box {
+
     background: rgba(255,255,255,0.05);
 
     border: 1px solid rgba(255,255,255,0.1);
@@ -42,14 +52,17 @@ h2 {
 
 input,
 select {
+
     width: 100%;
 
     padding: 14px;
 
     margin-top: 10px;
+
     margin-bottom: 15px;
 
     border: none;
+
     border-radius: 12px;
 
     background: rgba(255,255,255,0.08);
@@ -62,10 +75,12 @@ select {
 }
 
 input::placeholder {
+
     color: rgba(255,255,255,0.5);
 }
 
 button {
+
     width: 100%;
 
     padding: 14px;
@@ -83,6 +98,7 @@ button {
     color: white;
 
     font-size: 16px;
+
     font-weight: bold;
 
     cursor: pointer;
@@ -91,12 +107,14 @@ button {
 }
 
 button:hover {
+
     transform: translateY(-2px);
 
     opacity: 0.9;
 }
 
 table {
+
     width: 100%;
 
     border-collapse: collapse;
@@ -111,6 +129,7 @@ table {
 }
 
 th {
+
     background: rgba(255,255,255,0.08);
 
     text-align: left;
@@ -123,16 +142,19 @@ th {
 }
 
 td {
+
     padding: 18px;
 
     border-top: 1px solid rgba(255,255,255,0.05);
 }
 
 tr:hover {
+
     background: rgba(255,255,255,0.03);
 }
 
 a {
+
     display: inline-block;
 
     padding: 12px 18px;
@@ -151,16 +173,19 @@ a {
 }
 
 a:hover {
+
     opacity: 0.85;
 }
 
 .login-container {
+
     max-width: 420px;
 
     margin: 80px auto;
 }
 
 .crypto-card {
+
     display: flex;
 
     justify-content: space-between;
@@ -177,11 +202,14 @@ a:hover {
 }
 
 .crypto-balance {
+
     font-size: 34px;
+
     font-weight: bold;
 }
 
 .badge-admin {
+
     background: #dc2626;
 
     padding: 6px 10px;
@@ -194,6 +222,7 @@ a:hover {
 }
 
 .badge-user {
+
     background: #059669;
 
     padding: 6px 10px;
@@ -202,32 +231,52 @@ a:hover {
 
     font-size: 12px;
 
+    font-weight: bold;
+}
+
 .topbar {
 
-    display: flex;
+    position: fixed;
 
-    justify-content: flex-end;
+    top: 20px;
 
-    margin-bottom: 20px;
+    right: 20px;
+
+    z-index: 999;
 }
 
 .logout-btn {
 
-    width: auto;
+    width: auto !important;
 
-    padding: 10px 18px;
+    padding: 8px 16px !important;
+
+    border-radius: 10px;
 
     background: rgba(255,255,255,0.08);
 
-    border: 1px solid rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.12);
 
-    font-size: 14px;
+    color: white;
+
+    font-size: 13px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    backdrop-filter: blur(10px);
+
+    box-shadow:
+        0 4px 15px rgba(0,0,0,0.3);
+
+    transition: 0.2s;
 }
 
 .logout-btn:hover {
 
-    background: rgba(255,255,255,0.12);
-}
+    background: rgba(255,255,255,0.15);
 
-    font-weight: bold;
+    transform: translateY(-1px);
 }
+```
