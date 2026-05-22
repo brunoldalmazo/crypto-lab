@@ -1,21 +1,45 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-    <title>Admin</title>
-    <link rel="stylesheet" href="style.css">
+
+    <title>Painel Admin</title>
+
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
+
 </head>
+
 <body>
 
-<h1>Painel Admin</h1>
+<a href="dashboard.html">
+    ← Voltar Dashboard
+</a>
+
+<h1>🛠️ Painel Admin</h1>
 
 <div class="box">
 
-    <h2>Transferir</h2>
+    <h2>💸 Transferir Criptos</h2>
 
-    <input id="toId" placeholder="ID destino">
-    <input id="valor" placeholder="Valor">
+    <input
+        id="fromId"
+        placeholder="ID origem"
+    >
 
-    <button onclick="transferir()">
+    <input
+        id="toId"
+        placeholder="ID destino"
+    >
+
+    <input
+        id="valor"
+        placeholder="Valor"
+    >
+
+    <button onclick="transferirAdmin()">
         Transferir
     </button>
 
@@ -23,21 +47,53 @@
 
 <div class="box">
 
-    <h2>Alterar Cargo</h2>
+    <h2>👑 Alterar Cargo</h2>
 
-    <input id="userId" placeholder="ID usuario">
+    <input
+        id="userId"
+        placeholder="ID usuario"
+    >
 
     <select id="novoTipo">
-        <option value="user">user</option>
-        <option value="admin">admin</option>
+
+        <option value="user">
+            user
+        </option>
+
+        <option value="admin">
+            admin
+        </option>
+
     </select>
 
     <button onclick="alterarCargo()">
-        Alterar
+        Alterar Cargo
+    </button>
+
+</div>
+
+<div class="box">
+
+    <h2>🔑 Alterar Senha</h2>
+
+    <input
+        id="senhaUserId"
+        placeholder="ID usuario"
+    >
+
+    <input
+        id="novaSenhaAdmin"
+        placeholder="Nova senha"
+    >
+
+    <button onclick="alterarSenha()">
+        Alterar Senha
     </button>
 
 </div>
 
 <script src="app.js"></script>
+
 </body>
+
 </html>
