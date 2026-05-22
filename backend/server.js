@@ -69,13 +69,53 @@ db.serialize(() => {
 
                     VALUES
                     (
+                        'carol',
+                        'Aluno',
+                        100,
+                        'user',
+                        'carol'
+                    )
+                `);
+
+                db.run(`
+                    INSERT INTO users
+                    (
+                        nome,
+                        descricao,
+                        saldo,
+                        tipo,
+                        senha
+                    )
+
+                    VALUES
+                    (
                         'joao',
                         'Aluno',
                         100,
                         'user',
-                        '1234'
+                        'joao'
                     )
                 `);
+                
+                db.run(`
+                    INSERT INTO users
+                    (
+                        nome,
+                        descricao,
+                        saldo,
+                        tipo,
+                        senha
+                    )
+
+                    VALUES
+                    (
+                        'maria',
+                        'Aluno',
+                        100,
+                        'user',
+                        'maria'
+                    )
+                `);            
             }
         }
     );
