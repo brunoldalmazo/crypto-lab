@@ -301,3 +301,62 @@ async function alterarSenha() {
         JSON.stringify(data)
     );
 }
+
+async function adminCriarUsuario() {
+
+    const admin = JSON.parse(
+        localStorage.getItem("user")
+    );
+
+    const nome =
+        document.getElementById(
+            "adminNovoNome"
+        ).value;
+
+    const senha =
+        document.getElementById(
+            "adminNovaSenha"
+        ).value;
+
+    const descricao =
+        document.getElementById(
+            "adminDescricao"
+        ).value;
+
+    const saldo =
+        document.getElementById(
+            "adminSaldo"
+        ).value;
+
+    const tipo =
+        document.getElementById(
+            "adminTipo"
+        ).value;
+
+    const req = await fetch(
+        "/admin-create-user",
+        {
+            method: "POST",
+
+            headers: {
+                "Content-Type":
+                    "application/json"
+            },
+
+            body: JSON.stringify({
+                adminId: admin.id,
+                nome,
+                senha,
+                descricao,
+                saldo,
+                tipo
+            })
+        }
+    );
+
+    const data = await req.json();
+
+    alert(
+        JSON.stringify(data)
+    );
+}
