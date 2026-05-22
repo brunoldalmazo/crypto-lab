@@ -273,6 +273,99 @@ app.post("/alterar-cargo", (req, res) => {
     );
 });
 
+app.post("/admin-transfer", (req, res) => {
+
+    const {
+        adminId,
+        fromId,
+        toId,
+        valor
+    } = req.body;
+
+    db.get(
+        "SELECT * FROM users WHERE id=?",
+        [adminId],
+
+        (err, admin) => {
+
+            if (
+                !admin ||
+                admin.tipo !== "admin"
+            ) {
+
+                return res.status(403).json({
+                    erro: "Sem permissao"
+                });
+            }
+
+            db.run(
+                `
+                UPDATE users
+                SET saldo = saldo - ?
+                WHERE id = ?
+                `,
+                [valor, fromId]
+            );
+
+            db.run(
+                `
+                UPDATE users
+                SET saldo = saldo + ?
+                WHERE id = ?
+                `,
+                [valor, toId]
+            );
+
+            res.json({
+                sucesso: true
+            });
+        }
+    );
+});
+
+app.post("/alterar-senha", (req, res) => {
+
+    const {
+        adminId,
+        userId,
+        novaSenha
+    } = req.body;
+
+    db.get(
+        "SELECT * FROM users WHERE id=?",
+        [adminId],
+
+        (err, admin) => {
+
+            if (
+                !admin ||
+                admin.tipo !== "admin"
+            ) {
+
+                return res.status(403).json({
+                    erro: "Sem permissao"
+                });
+            }
+
+            db.run(
+                `
+                UPDATE users
+                SET senha = ?
+                WHERE id = ?
+                `,
+                [novaSenha, userId],
+
+                function() {
+
+                    res.json({
+                        sucesso: true
+                    });
+                }
+            );
+        }
+    );
+});
+
 const PORT =
     process.env.PORT || 3000;
 
