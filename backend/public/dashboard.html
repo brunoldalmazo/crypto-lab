@@ -1,16 +1,22 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Dashboard</title>
-    <link rel="stylesheet" href="style.css">
-</head>
 <body onload="carregarUsuarios()">
 
-<h1>Usuarios</h1>
+<h1>📊 Dashboard</h1>
+
+<div class="crypto-card">
+
+    <div>
+        <div>Moeda do Sistema</div>
+        <div class="crypto-balance">
+            ₿ CryptoCoin
+        </div>
+    </div>
+
+</div>
 
 <div id="painelAdmin"></div>
 
 <table>
+
     <thead>
         <tr>
             <th>ID</th>
@@ -22,8 +28,9 @@
     </thead>
 
     <tbody id="listaUsuarios"></tbody>
+
 </table>
 
 <script src="app.js"></script>
+
 </body>
-</html>
