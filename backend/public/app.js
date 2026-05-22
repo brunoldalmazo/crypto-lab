@@ -55,7 +55,11 @@ async function carregarUsuarios() {
                 <td>${user.nome}</td>
                 <td>${user.descricao}</td>
                 <td>${user.saldo}</td>
-                <td>${user.tipo}</td>
+                <td>${
+                 user.tipo === "admin"
+                 ? '<span class="badge-admin">ADMIN</span>'
+                 : '<span class="badge-user">USER</span>'
+                }</td>
             </tr>
         `;
     });
