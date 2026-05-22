@@ -360,3 +360,12 @@ async function adminCriarUsuario() {
         JSON.stringify(data)
     );
 }
+
+function logout() {
+
+    localStorage.removeItem(
+        "user"
+    );
+
+    window.location = "/";
+}
