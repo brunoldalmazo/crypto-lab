@@ -1,4 +1,4 @@
-const API = "https://crypto-lab-9m7u.onrender.com";
+const API = "";
 
 async function login() {
 
