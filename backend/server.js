@@ -440,6 +440,48 @@ app.post("/admin-create-user", (req, res) => {
     );
 });
 
+app.post("/delete-user", (req, res) => {
+
+    const {
+        adminId,
+        userId
+    } = req.body;
+
+    db.get(
+        "SELECT * FROM users WHERE id=?",
+        [adminId],
+
+        (err, admin) => {
+
+            if (
+                !admin ||
+                admin.tipo !== "admin"
+            ) {
+
+                return res.status(403).json({
+                    erro: "Sem permissao"
+                });
+            }
+
+            db.run(
+                `
+                DELETE FROM users
+                WHERE id = ?
+                `,
+                [userId],
+
+                function() {
+
+                    res.json({
+                        sucesso: true,
+                        removidos: this.changes
+                    });
+                }
+            );
+        }
+    );
+});
+
 const PORT =
     process.env.PORT || 3000;
 
