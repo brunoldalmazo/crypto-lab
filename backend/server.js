@@ -366,6 +366,80 @@ app.post("/alterar-senha", (req, res) => {
     );
 });
 
+app.post("/admin-create-user", (req, res) => {
+
+    const {
+        adminId,
+        nome,
+        senha,
+        descricao,
+        saldo,
+        tipo
+    } = req.body;
+
+    db.get(
+        "SELECT * FROM users WHERE id=?",
+        [adminId],
+
+        (err, admin) => {
+
+            if (
+                !admin ||
+                admin.tipo !== "admin"
+            ) {
+
+                return res.status(403).json({
+                    erro: "Sem permissao"
+                });
+            }
+
+            db.run(
+                `
+                INSERT INTO users
+                (
+                    nome,
+                    descricao,
+                    saldo,
+                    tipo,
+                    senha
+                )
+
+                VALUES
+                (
+                    ?,
+                    ?,
+                    ?,
+                    ?,
+                    ?
+                )
+                `,
+                [
+                    nome,
+                    descricao,
+                    saldo,
+                    tipo,
+                    senha
+                ],
+
+                function(err) {
+
+                    if (err) {
+
+                        return res.json({
+                            erro: err.message
+                        });
+                    }
+
+                    res.json({
+                        sucesso: true,
+                        id: this.lastID
+                    });
+                }
+            );
+        }
+    );
+});
+
 const PORT =
     process.env.PORT || 3000;
 
