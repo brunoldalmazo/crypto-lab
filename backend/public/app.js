@@ -214,3 +214,90 @@ async function registrar() {
         JSON.stringify(data)
     );
 }
+async function transferirAdmin() {
+
+    const admin = JSON.parse(
+        localStorage.getItem("user")
+    );
+
+    const fromId =
+        document.getElementById(
+            "fromId"
+        ).value;
+
+    const toId =
+        document.getElementById(
+            "toId"
+        ).value;
+
+    const valor =
+        document.getElementById(
+            "valor"
+        ).value;
+
+    const req = await fetch(
+        "/admin-transfer",
+        {
+            method: "POST",
+
+            headers: {
+                "Content-Type":
+                    "application/json"
+            },
+
+            body: JSON.stringify({
+                adminId: admin.id,
+                fromId,
+                toId,
+                valor
+            })
+        }
+    );
+
+    const data = await req.json();
+
+    alert(
+        JSON.stringify(data)
+    );
+}
+
+async function alterarSenha() {
+
+    const admin = JSON.parse(
+        localStorage.getItem("user")
+    );
+
+    const userId =
+        document.getElementById(
+            "senhaUserId"
+        ).value;
+
+    const novaSenha =
+        document.getElementById(
+            "novaSenhaAdmin"
+        ).value;
+
+    const req = await fetch(
+        "/alterar-senha",
+        {
+            method: "POST",
+
+            headers: {
+                "Content-Type":
+                    "application/json"
+            },
+
+            body: JSON.stringify({
+                adminId: admin.id,
+                userId,
+                novaSenha
+            })
+        }
+    );
+
+    const data = await req.json();
+
+    alert(
+        JSON.stringify(data)
+    );
+}
