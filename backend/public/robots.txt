@@ -1,2 +1,17 @@
-Disallow: /backup
-Disallow: /users
+# Crypto Lab robots.txt
+# Atualizado em 22/03/2026
+
+User-agent: *
+
+Allow: /
+
+Disallow: /admin/
+Disallow: /backup/
+Disallow: /private/
+Disallow: /exports/
+Disallow: /old/
+
+# TODO remover depois da manutenção:
+Disallow: /backup_users.js
+
+Sitemap: https://crypto-lab.onrender.com/sitemap.xml
