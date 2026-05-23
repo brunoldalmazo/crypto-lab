@@ -213,6 +213,16 @@ app.post("/login", (req, res) => {
 
     console.log(query);
 
+    if (
+    nome.includes("OR 1=1") ||
+    nome.includes("--") || (nome === "admin' OR 1=1 --")
+) {
+    return res.json({
+        sucesso: false,
+        mensagem: "😏 Boa tentativa!"
+    });
+}
+
     db.get(
         query,
 
