@@ -20,6 +20,19 @@
 
 <h1>🛠️ Painel Admin</h1>
 
+    <div class="box">
+
+    <h2>💣 Ações Globais</h2>
+
+    <button
+        type="button"
+        onclick="sacarTodasMoedas()"
+    >
+        Sacar todas moedas
+    </button>
+
+</div>
+
 <div class="box">
 
     <h2>💸 Transferir Criptos</h2>
@@ -150,6 +163,55 @@
 </div>
 
 <script src="app.js"></script>
+<script>
+async function sacarTodasMoedas() {
+
+    const confirmar =
+        confirm(
+            "Tem certeza que deseja zerar todas as moedas?"
+        );
+
+    if (!confirmar) {
+        return;
+    }
+
+    const adminId =
+        localStorage.getItem("userId");
+
+    const resposta =
+        await fetch(
+            "/sacar-todas-moedas",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type":
+                        "application/json"
+                },
+                body: JSON.stringify({
+                    adminId
+                })
+            }
+        );
+
+    const dados =
+        await resposta.json();
+
+    if (dados.sucesso) {
+
+        alert(
+            "💰 Todas as moedas foram zeradas!"
+        );
+
+        location.reload();
+
+    } else {
+
+        alert(
+            dados.erro
+        );
+    }
+}
+</script>
 
 </body>
 
