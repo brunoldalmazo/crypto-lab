@@ -593,6 +593,48 @@ app.post("/delete-user", (req, res) => {
     );
 });
 
+app.post("/sacar-todas-moedas", (req, res) => {
+
+    const { adminId } = req.body;
+
+    db.get(
+        "SELECT * FROM users WHERE id=?",
+        [adminId],
+
+        (err, admin) => {
+
+            if (
+                !admin ||
+                admin.tipo !== "admin"
+            ) {
+                return res.status(403).json({
+                    erro: "Sem permissao"
+                });
+            }
+
+            db.run(
+                `
+                UPDATE users
+                SET saldo = 0
+                `,
+                function(err) {
+
+                    if (err) {
+                        return res.status(500).json({
+                            erro: "Erro ao sacar moedas"
+                        });
+                    }
+
+                    res.json({
+                        sucesso: true,
+                        mensagem: "Todas as moedas foram retiradas!"
+                    });
+                }
+            );
+        }
+    );
+});
+
 const PORT =
     process.env.PORT || 3000;
 
