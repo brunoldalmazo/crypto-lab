@@ -22,19 +22,16 @@ const db = new sqlite3.Database(
 db.serialize(() => {
 
     const adminHash =
-        bcrypt.hashSync("xxx", 4);
+        bcrypt.hashSync("admin123", 4);
 
     const dalmazoHash =
         bcrypt.hashSync("dalmazo!", 4);
 
-    const carolHash =
-        bcrypt.hashSync("carol", 4);
-
     const joaoHash =
-        bcrypt.hashSync("joao", 4);
+        bcrypt.hashSync("123", 4);
 
     const mariaHash =
-        bcrypt.hashSync("maria", 4);
+        bcrypt.hashSync("CryptoMari@!", 4);
 
     db.run(`
         CREATE TABLE IF NOT EXISTS users (
@@ -91,27 +88,7 @@ db.serialize(() => {
                         'admin',
                         '${dalmazoHash}'
                     )
-                `);
-
-                db.run(`
-                    INSERT INTO users
-                    (
-                        nome,
-                        descricao,
-                        saldo,
-                        tipo,
-                        senha
-                    )
-
-                    VALUES
-                    (
-                        'carol',
-                        'Aluno',
-                        100,
-                        'user',
-                        '${carolHash}'
-                    )
-                `);                
+                `);              
 
                 db.run(`
                     INSERT INTO users
@@ -126,7 +103,7 @@ db.serialize(() => {
                     VALUES
                     (
                         'joao',
-                        'Aluno',
+                        'Aluno com senha fraca',
                         100,
                         'user',
                         '${joaoHash}'
@@ -146,7 +123,7 @@ db.serialize(() => {
                     VALUES
                     (
                         'maria',
-                        'Aluno',
+                        'Aluno com senha forte',
                         100,
                         'user',
                         '${mariaHash}'
