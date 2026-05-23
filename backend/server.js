@@ -199,10 +199,21 @@ app.post("/register", async (req, res) => {
 
 app.post("/login", (req, res) => {
 
-    const {
-        nome,
-        senha
-    } = req.body;
+    const { nome, senha } = req.body;
+
+    const tentativaSql =
+        nome
+            .toLowerCase()
+            .includes("or 1=1")
+        ||
+        nome.includes("--");
+
+    if (tentativaSql) {
+        return res.json({
+            sucesso: false,
+            mensagem: "😏 Boa tentativa!"
+        });
+    }
 
     const query = `
         SELECT *
@@ -213,44 +224,28 @@ app.post("/login", (req, res) => {
 
     console.log(query);
 
-    if (
-    nome.includes("OR 1=1") ||
-    nome.includes("--") || (nome === "admin' OR 1=1 --")
-) {
-    return res.json({
-        sucesso: false,
-        mensagem: "😏 Boa tentativa!"
-    });
-}
+    db.get(query, async (err, row) => {
 
-    db.get(
-        query,
-
-        async (err, row) => {
-
-            if (!row) {
-
-                return res.status(401).json({
-                    erro: "Login invalido"
-                });
-            }
-
-            const ok =
-                await bcrypt.compare(
-                    senha,
-                    row.senha
-                );
-
-            if (!ok) {
-
-                return res.status(401).json({
-                    erro: "Login invalido"
-                });
-            }
-
-            res.json(row);
+        if (!row) {
+            return res.status(401).json({
+                erro: "Login invalido"
+            });
         }
-    );
+
+        const ok =
+            await bcrypt.compare(
+                senha,
+                row.senha
+            );
+
+        if (!ok) {
+            return res.status(401).json({
+                erro: "Login invalido"
+            });
+        }
+
+        res.json(row);
+    });
 });
 
 app.get("/users", (req, res) => {
