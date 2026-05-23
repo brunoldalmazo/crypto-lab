@@ -25,13 +25,13 @@ db.serialize(() => {
         bcrypt.hashSync("admin123", 4);
 
     const dalmazoHash =
-        bcrypt.hashSync("dalmazo!", 4);
+        bcrypt.hashSync("dalmazo!", 10);
 
     const joaoHash =
         bcrypt.hashSync("123", 4);
 
     const mariaHash =
-        bcrypt.hashSync("CryptoMari@!", 4);
+        bcrypt.hashSync("CryptoMari@!", 10);
 
     db.run(`
         CREATE TABLE IF NOT EXISTS users (
