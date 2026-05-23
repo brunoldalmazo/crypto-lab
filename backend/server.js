@@ -207,6 +207,17 @@ app.post("/login", (req, res) => {
         });
     }
 
+    const tentativaSql =
+        nome.toLowerCase().includes("or 1=1") ||
+        nome.includes("--") ||
+        nome.includes("'");
+
+    if (tentativaSql) {
+        return res.status(401).json({
+            erro: "😏 Boa tentativa!"
+        });
+    }
+
     db.get(
         `
         SELECT *
@@ -252,6 +263,7 @@ app.post("/login", (req, res) => {
         }
     );
 });
+
 app.get("/users", (req, res) => {
 
     db.all(
