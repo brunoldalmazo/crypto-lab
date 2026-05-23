@@ -201,36 +201,28 @@ app.post("/login", (req, res) => {
 
     const { nome, senha } = req.body;
 
-    console.log("LOGIN RECEBIDO:", nome);
-
-    if (
-        nome &&
-        (
-            nome.toLowerCase().includes("or 1=1") ||
-            nome.includes("--") ||
-            nome.includes("'")
-        )
-    ) {
-        console.log("BLOQUEADO");
-
-        return res.json({
-            sucesso: false,
-            mensagem: "😏 Boa tentativa!"
+    if (!nome || !senha) {
+        return res.status(400).json({
+            erro: "Preencha nome e senha"
         });
     }
 
-    const query = `
+    db.get(
+        `
         SELECT *
         FROM users
-        WHERE nome = '${nome}'
+        WHERE nome = ?
         LIMIT 1
-    `;
+        `,
+        [nome],
 
-    console.log("QUERY:", query);
-
-    db.get(
-        query,
         async (err, row) => {
+
+            if (err) {
+                return res.status(500).json({
+                    erro: "Erro no servidor"
+                });
+            }
 
             if (!row) {
                 return res.status(401).json({
@@ -250,11 +242,16 @@ app.post("/login", (req, res) => {
                 });
             }
 
-            res.json(row);
+            res.json({
+                id: row.id,
+                nome: row.nome,
+                descricao: row.descricao,
+                saldo: row.saldo,
+                tipo: row.tipo
+            });
         }
     );
 });
-
 app.get("/users", (req, res) => {
 
     db.all(
