@@ -21,6 +21,18 @@ const db = new sqlite3.Database(
 
 db.serialize(() => {
 
+    const adminHash =
+        bcrypt.hashSync("1234", 10);
+
+    const carolHash =
+        bcrypt.hashSync("carol", 10);
+
+    const joaoHash =
+        bcrypt.hashSync("joao", 10);
+
+    const mariaHash =
+        bcrypt.hashSync("maria", 10);
+
     db.run(`
         CREATE TABLE IF NOT EXISTS users (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -54,7 +66,7 @@ db.serialize(() => {
                         'Administrador',
                         1000,
                         'admin',
-                        '1234'
+                        '${adminHash}'
                     )
                 `);
 
@@ -74,7 +86,7 @@ db.serialize(() => {
                         'Aluno',
                         100,
                         'user',
-                        'carol'
+                        '${carolHash}'
                     )
                 `);
 
@@ -94,10 +106,10 @@ db.serialize(() => {
                         'Aluno',
                         100,
                         'user',
-                        'joao'
+                        '${joaoHash}'
                     )
                 `);
-                
+
                 db.run(`
                     INSERT INTO users
                     (
@@ -114,15 +126,16 @@ db.serialize(() => {
                         'Aluno',
                         100,
                         'user',
-                        'maria'
+                        '${mariaHash}'
                     )
-                `);            
+                `);
             }
         }
     );
 });
 
 app.get("/", (req, res) => {
+
     res.sendFile(
         path.join(
             __dirname,
@@ -132,12 +145,18 @@ app.get("/", (req, res) => {
     );
 });
 
-app.post("/register", (req, res) => {
+app.post("/register", async (req, res) => {
 
     const {
         nome,
         senha
     } = req.body;
+
+    const hash =
+        await bcrypt.hash(
+            senha,
+            10
+        );
 
     db.run(
         `
@@ -159,11 +178,12 @@ app.post("/register", (req, res) => {
             ?
         )
         `,
-        [nome, senha],
+        [nome, hash],
 
         function(err) {
 
             if (err) {
+
                 return res.status(500).json({
                     erro: err.message
                 });
@@ -185,9 +205,10 @@ app.post("/login", (req, res) => {
     } = req.body;
 
     const query = `
-        SELECT * FROM users
+        SELECT *
+        FROM users
         WHERE nome = '${nome}'
-        AND senha = '${senha}'
+        LIMIT 1
     `;
 
     console.log(query);
@@ -195,9 +216,22 @@ app.post("/login", (req, res) => {
     db.get(
         query,
 
-        (err, row) => {
+        async (err, row) => {
 
             if (!row) {
+
+                return res.status(401).json({
+                    erro: "Login invalido"
+                });
+            }
+
+            const ok =
+                await bcrypt.compare(
+                    senha,
+                    row.senha
+                );
+
+            if (!ok) {
 
                 return res.status(401).json({
                     erro: "Login invalido"
@@ -379,7 +413,7 @@ app.post("/alterar-senha", (req, res) => {
         "SELECT * FROM users WHERE id=?",
         [adminId],
 
-        (err, admin) => {
+        async (err, admin) => {
 
             if (
                 !admin ||
@@ -391,13 +425,19 @@ app.post("/alterar-senha", (req, res) => {
                 });
             }
 
+            const hash =
+                await bcrypt.hash(
+                    novaSenha,
+                    10
+                );
+
             db.run(
                 `
                 UPDATE users
                 SET senha = ?
                 WHERE id = ?
                 `,
-                [novaSenha, userId],
+                [hash, userId],
 
                 function() {
 
@@ -425,7 +465,7 @@ app.post("/admin-create-user", (req, res) => {
         "SELECT * FROM users WHERE id=?",
         [adminId],
 
-        (err, admin) => {
+        async (err, admin) => {
 
             if (
                 !admin ||
@@ -436,6 +476,12 @@ app.post("/admin-create-user", (req, res) => {
                     erro: "Sem permissao"
                 });
             }
+
+            const hash =
+                await bcrypt.hash(
+                    senha,
+                    10
+                );
 
             db.run(
                 `
@@ -462,7 +508,7 @@ app.post("/admin-create-user", (req, res) => {
                     descricao,
                     saldo,
                     tipo,
-                    senha
+                    hash
                 ],
 
                 function(err) {
