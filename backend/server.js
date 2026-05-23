@@ -201,14 +201,18 @@ app.post("/login", (req, res) => {
 
     const { nome, senha } = req.body;
 
-    const tentativaSql =
-        nome
-            .toLowerCase()
-            .includes("or 1=1")
-        ||
-        nome.includes("--");
+    console.log("LOGIN RECEBIDO:", nome);
 
-    if (tentativaSql) {
+    if (
+        nome &&
+        (
+            nome.toLowerCase().includes("or 1=1") ||
+            nome.includes("--") ||
+            nome.includes("'")
+        )
+    ) {
+        console.log("BLOQUEADO");
+
         return res.json({
             sucesso: false,
             mensagem: "😏 Boa tentativa!"
@@ -222,30 +226,33 @@ app.post("/login", (req, res) => {
         LIMIT 1
     `;
 
-    console.log(query);
+    console.log("QUERY:", query);
 
-    db.get(query, async (err, row) => {
+    db.get(
+        query,
+        async (err, row) => {
 
-        if (!row) {
-            return res.status(401).json({
-                erro: "Login invalido"
-            });
+            if (!row) {
+                return res.status(401).json({
+                    erro: "Login invalido"
+                });
+            }
+
+            const ok =
+                await bcrypt.compare(
+                    senha,
+                    row.senha
+                );
+
+            if (!ok) {
+                return res.status(401).json({
+                    erro: "Login invalido"
+                });
+            }
+
+            res.json(row);
         }
-
-        const ok =
-            await bcrypt.compare(
-                senha,
-                row.senha
-            );
-
-        if (!ok) {
-            return res.status(401).json({
-                erro: "Login invalido"
-            });
-        }
-
-        res.json(row);
-    });
+    );
 });
 
 app.get("/users", (req, res) => {
