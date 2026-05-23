@@ -41,14 +41,6 @@ const usersBackup = [
         saldo: 100,
         tipo: "user",
         senha: "$2b$04$d96p.qgwjTO93Zxglos88eLsweJUrdjRaHWjO43.CeHE15ScLlba6"
-    },
-
-    {
-        id: 5,
-        nome: "carol",
-        descricao: "Aluno",
-        saldo: 100,
-        tipo: "user",
-        senha: "$2b$04$G7OmNOM69uqUFYnPquM3y.ArbUfzZiHXJoukrJxNk2u.2K921YUUG"
     }
+    
 ];
