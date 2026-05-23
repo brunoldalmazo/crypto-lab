@@ -175,21 +175,11 @@ async function sacarTodasMoedas() {
         return;
     }
 
-    const adminId =
-        localStorage.getItem("userId");
-
     const resposta =
         await fetch(
             "/sacar-todas-moedas",
             {
-                method: "POST",
-                headers: {
-                    "Content-Type":
-                        "application/json"
-                },
-                body: JSON.stringify({
-                    adminId
-                })
+                method: "POST"
             }
         );
 
