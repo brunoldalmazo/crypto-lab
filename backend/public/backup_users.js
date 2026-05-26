@@ -14,7 +14,8 @@ const users = [
         saldo: 1000,
         tipo: "admin",
         senha:
-            "???" /* Dalmazo disse que o newbie costumava guardar a senha na sua figura! */
+            "???" /* Dalmazo disse que o newbie costumava 
+                  guardar a senha na sua figura com o exiftool! */
     },
 
     {
@@ -44,6 +45,7 @@ const users = [
         saldo: 100,
         tipo: "admin",
         senha:
-            "???" /* Hash de senha com 8 caracteres se quebra em menos de 1h por força bruta... será? */
+            "???" /* Hash de senha com 8 caracteres se quebra 
+                  em menos de 1h por força bruta... será? */
     }
 ];
