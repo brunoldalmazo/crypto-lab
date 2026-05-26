@@ -8,36 +8,54 @@ async function login() {
     const senha =
         document.getElementById("senha").value;
 
-    const req = await fetch(`${API}/login`, {
+    const resposta =
+        await fetch(
+            "/login",
+            {
+                method: "POST",
 
-        method: "POST",
+                headers: {
+                    "Content-Type":
+                        "application/json"
+                },
 
-        headers: {
-            "Content-Type": "application/json"
-        },
+                body: JSON.stringify({
+                    nome,
+                    senha
+                })
+            }
+        );
 
-        body: JSON.stringify({
-            nome,
-            senha
-        })
-    });
+    const dados =
+        await resposta.json();
 
-    const data = await req.json();
+    if (dados.id) {
 
-    if (data.erro) {
+        localStorage.setItem(
+            "userId",
+            dados.id
+        );
 
-        alert(data.erro);
-        return;
+        localStorage.setItem(
+            "userNome",
+            dados.nome
+        );
+
+        localStorage.setItem(
+            "tipo",
+            dados.tipo
+        );
+
+        window.location.href =
+            "/dashboard.html";
+
+    } else {
+
+        alert(
+            dados.erro
+        );
     }
-
-    localStorage.setItem(
-        "user",
-        JSON.stringify(data)
-    );
-
-    window.location = "dashboard.html";
 }
-
 async function carregarUsuarios() {
 
     const req =
