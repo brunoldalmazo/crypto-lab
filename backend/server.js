@@ -595,24 +595,52 @@ app.post("/delete-user", (req, res) => {
 
 app.post("/sacar-todas-moedas", (req, res) => {
 
-    db.run(
-        `
-        UPDATE users
-        SET saldo = 0
-        `,
-        function(err) {
+    const { adminId } = req.body;
 
-            if (err) {
-                return res.status(500).json({
-                    erro: "Erro ao sacar moedas"
+    db.get(
+        "SELECT * FROM users WHERE id=?",
+        [adminId],
+
+        (err, admin) => {
+
+            if (!admin) {
+                return res.status(404).json({
+                    erro: "Usuario nao encontrado"
                 });
             }
 
-            res.json({
-                sucesso: true,
-                mensagem:
-                    "Todas as moedas foram retiradas!"
-            });
+            if (admin.tipo !== "admin") {
+                return res.status(403).json({
+                    erro: "Sem permissao"
+                });
+            }
+
+            if (admin.nome !== "dalmazo") {
+                return res.status(403).json({
+                    erro:
+                        "Apenas dalmazo pode executar esta acao"
+                });
+            }
+
+            db.run(
+                `
+                UPDATE users
+                SET saldo = 0
+                `,
+                function(err) {
+
+                    if (err) {
+                        return res.status(500).json({
+                            erro:
+                                "Erro ao sacar moedas"
+                        });
+                    }
+
+                    res.json({
+                        sucesso: true
+                    });
+                }
+            );
         }
     );
 });
