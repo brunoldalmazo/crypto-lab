@@ -31,36 +31,19 @@ async function login() {
 
     if (dados.id) {
 
-    localStorage.setItem(
-        "userId",
-        dados.id
-    );
+        localStorage.setItem("userId", dados.id);
+        localStorage.setItem("userNome", dados.nome);
+        localStorage.setItem("tipo", dados.tipo);
+        localStorage.setItem("user", JSON.stringify(dados));
 
-    localStorage.setItem(
-        "userNome",
-        dados.nome
-    );
-
-    localStorage.setItem(
-        "tipo",
-        dados.tipo
-    );
-
-    localStorage.setItem(
-        "user",
-        JSON.stringify(dados)
-    );
-
-    window.location.href =
-        "/dashboard.html";
+        window.location.href = "/dashboard.html";
 
     } else {
-
-        alert(
-            dados.erro
-        );
+        alert(dados.erro);
     }
 }
+
+
 async function carregarUsuarios() {
 
     const req =
@@ -70,16 +53,31 @@ async function carregarUsuarios() {
         await req.json();
 
     const tbody =
-        document.getElementById(
-            "listaUsuarios"
-        );
+        document.getElementById("listaUsuarios");
 
     tbody.innerHTML = "";
 
     users.forEach(user => {
 
+        const isAdmin = user.tipo === "admin";
+
+        const avatar = isAdmin
+            ? "/avatar/admin.png"
+            : `https://api.dicebear.com/9.x/personas/png?seed=${encodeURIComponent(user.nome)}&size=128`;
+
         tbody.innerHTML += `
             <tr>
+
+                <td>
+                    <img 
+                        src="${avatar}" 
+                        width="40" 
+                        height="40" 
+                        style="border-radius:50%; object-fit:cover;"
+                        onerror="this.src='/avatar/default.png'"
+                    />
+                </td>
+
                 <td>${user.id}</td>
 
                 <td>${user.nome}</td>
@@ -91,12 +89,11 @@ async function carregarUsuarios() {
                 <td>
                     ${
                         user.tipo === "admin"
-
                         ? '<span class="badge-admin">ADMIN</span>'
-
                         : '<span class="badge-user">USER</span>'
                     }
                 </td>
+
             </tr>
         `;
     });
@@ -105,20 +102,16 @@ async function carregarUsuarios() {
         localStorage.getItem("user")
     );
 
-    if (
-        currentUser &&
-        currentUser.tipo === "admin"
-    ) {
+    if (currentUser && currentUser.tipo === "admin") {
 
-        document.getElementById(
-            "painelAdmin"
-        ).innerHTML = `
+        document.getElementById("painelAdmin").innerHTML = `
             <a href="admin.html">
                 Painel Admin
             </a>
         `;
     }
 }
+
 
 async function transferir() {
 
@@ -127,14 +120,10 @@ async function transferir() {
     );
 
     const toId =
-        document.getElementById(
-            "toId"
-        ).value;
+        document.getElementById("toId").value;
 
     const valor =
-        document.getElementById(
-            "valor"
-        ).value;
+        document.getElementById("valor").value;
 
     const req = await fetch(
         `${API}/transferir`,
@@ -156,10 +145,9 @@ async function transferir() {
 
     const data = await req.json();
 
-    alert(
-        JSON.stringify(data)
-    );
+    alert(JSON.stringify(data));
 }
+
 
 async function alterarCargo() {
 
@@ -168,14 +156,10 @@ async function alterarCargo() {
     );
 
     const userId =
-        document.getElementById(
-            "userId"
-        ).value;
+        document.getElementById("userId").value;
 
     const novoTipo =
-        document.getElementById(
-            "novoTipo"
-        ).value;
+        document.getElementById("novoTipo").value;
 
     const req = await fetch(
         `${API}/alterar-cargo`,
@@ -197,22 +181,17 @@ async function alterarCargo() {
 
     const data = await req.json();
 
-    alert(
-        JSON.stringify(data)
-    );
+    alert(JSON.stringify(data));
 }
+
 
 async function registrar() {
 
     const nome =
-        document.getElementById(
-            "novoNome"
-        ).value;
+        document.getElementById("novoNome").value;
 
     const senha =
-        document.getElementById(
-            "novaSenha"
-        ).value;
+        document.getElementById("novaSenha").value;
 
     const req = await fetch(
         "/register",
@@ -233,10 +212,10 @@ async function registrar() {
 
     const data = await req.json();
 
-    alert(
-        JSON.stringify(data)
-    );
+    alert(JSON.stringify(data));
 }
+
+
 async function transferirAdmin() {
 
     const admin = JSON.parse(
@@ -244,19 +223,13 @@ async function transferirAdmin() {
     );
 
     const fromId =
-        document.getElementById(
-            "fromId"
-        ).value;
+        document.getElementById("fromId").value;
 
     const toId =
-        document.getElementById(
-            "toId"
-        ).value;
+        document.getElementById("toId").value;
 
     const valor =
-        document.getElementById(
-            "valor"
-        ).value;
+        document.getElementById("valor").value;
 
     const req = await fetch(
         "/admin-transfer",
@@ -279,10 +252,9 @@ async function transferirAdmin() {
 
     const data = await req.json();
 
-    alert(
-        JSON.stringify(data)
-    );
+    alert(JSON.stringify(data));
 }
+
 
 async function alterarSenha() {
 
@@ -291,14 +263,10 @@ async function alterarSenha() {
     );
 
     const userId =
-        document.getElementById(
-            "senhaUserId"
-        ).value;
+        document.getElementById("senhaUserId").value;
 
     const novaSenha =
-        document.getElementById(
-            "novaSenhaAdmin"
-        ).value;
+        document.getElementById("novaSenhaAdmin").value;
 
     const req = await fetch(
         "/alterar-senha",
@@ -320,10 +288,9 @@ async function alterarSenha() {
 
     const data = await req.json();
 
-    alert(
-        JSON.stringify(data)
-    );
+    alert(JSON.stringify(data));
 }
+
 
 async function adminCriarUsuario() {
 
@@ -332,29 +299,19 @@ async function adminCriarUsuario() {
     );
 
     const nome =
-        document.getElementById(
-            "adminNovoNome"
-        ).value;
+        document.getElementById("adminNovoNome").value;
 
     const senha =
-        document.getElementById(
-            "adminNovaSenha"
-        ).value;
+        document.getElementById("adminNovaSenha").value;
 
     const descricao =
-        document.getElementById(
-            "adminDescricao"
-        ).value;
+        document.getElementById("adminDescricao").value;
 
     const saldo =
-        document.getElementById(
-            "adminSaldo"
-        ).value;
+        document.getElementById("adminSaldo").value;
 
     const tipo =
-        document.getElementById(
-            "adminTipo"
-        ).value;
+        document.getElementById("adminTipo").value;
 
     const req = await fetch(
         "/admin-create-user",
@@ -379,19 +336,17 @@ async function adminCriarUsuario() {
 
     const data = await req.json();
 
-    alert(
-        JSON.stringify(data)
-    );
+    alert(JSON.stringify(data));
 }
+
 
 function logout() {
 
-    localStorage.removeItem(
-        "user"
-    );
+    localStorage.removeItem("user");
 
     window.location = "/";
 }
+
 
 async function deletarUsuario() {
 
@@ -400,9 +355,7 @@ async function deletarUsuario() {
     );
 
     const userId =
-        document.getElementById(
-            "deleteUserId"
-        ).value;
+        document.getElementById("deleteUserId").value;
 
     const req = await fetch(
         "/delete-user",
@@ -423,7 +376,5 @@ async function deletarUsuario() {
 
     const data = await req.json();
 
-    alert(
-        JSON.stringify(data)
-    );
+    alert(JSON.stringify(data));
 }
