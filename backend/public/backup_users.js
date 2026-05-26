@@ -1,6 +1,6 @@
 /*
     Backup exportado manualmente
-    Admin: admin
+    Admin: admin newbie
     Data: 20/03/2026
     TODO:
     - revisar usuários
