@@ -14,7 +14,7 @@ const users = [
         saldo: 1000,
         tipo: "admin",
         senha:
-            "???" /* "Dalmazo disse que o newbie costumava guardar a senha em uma figura! */
+            "???" /* Dalmazo disse que o newbie costumava guardar a senha na sua figura! */
     },
 
     {
