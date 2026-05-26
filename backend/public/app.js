@@ -31,23 +31,28 @@ async function login() {
 
     if (dados.id) {
 
-        localStorage.setItem(
-            "userId",
-            dados.id
-        );
+    localStorage.setItem(
+        "userId",
+        dados.id
+    );
 
-        localStorage.setItem(
-            "userNome",
-            dados.nome
-        );
+    localStorage.setItem(
+        "userNome",
+        dados.nome
+    );
 
-        localStorage.setItem(
-            "tipo",
-            dados.tipo
-        );
+    localStorage.setItem(
+        "tipo",
+        dados.tipo
+    );
 
-        window.location.href =
-            "/dashboard.html";
+    localStorage.setItem(
+        "user",
+        JSON.stringify(dados)
+    );
+
+    window.location.href =
+        "/dashboard.html";
 
     } else {
 
