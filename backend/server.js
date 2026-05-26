@@ -25,10 +25,10 @@ db.serialize(() => {
         bcrypt.hashSync("admin123", 4);
 
     const dalmazoHash =
-        bcrypt.hashSync("dalmazo!", 10);
+        bcrypt.hashSync("dalmazo!", 8);
 
     const joaoHash =
-        bcrypt.hashSync("123", 4);
+        bcrypt.hashSync("1234", 4);
 
     const mariaHash =
         bcrypt.hashSync("CryptoMari@!", 10);
