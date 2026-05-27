@@ -14,8 +14,8 @@ const users = [
         saldo: 1000,
         tipo: "admin",
         senha:
-            "???" /* Dalmazo disse que o newbie costumava 
-                  guardar a senha na sua figura com o exiftool! */
+            "???" /* Dalmazo comentou que o newbie costumava guardar 
+                  a senha na sua figurinha. Talvez exiftool ajude! */
     },
 
     {
