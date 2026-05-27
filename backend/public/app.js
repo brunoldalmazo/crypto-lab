@@ -8,58 +8,58 @@ function isDalmazoId(id) {
 }
 
 function isDalmazoNome(nome) {
-    return nome
-        .trim()
-        .toLowerCase() === DALMAZO_NOME;
+    return nome.trim().toLowerCase() === DALMAZO_NOME;
 }
 
+async function mostrarResposta(req) {
+    try {
+        const data = await req.json();
+        alert(JSON.stringify(data));
+    } catch {
+        const txt = await req.text();
+        alert(txt || "Operação concluída.");
+    }
+}
 
 async function login() {
-
     const nome =
         document.getElementById("nome").value;
 
     const senha =
         document.getElementById("senha").value;
 
-    const resposta =
-        await fetch(
-            "/login",
-            {
-                method: "POST",
-
-                headers: {
-                    "Content-Type":
-                        "application/json"
-                },
-
-                body: JSON.stringify({
-                    nome,
-                    senha
-                })
-            }
-        );
+    const resposta = await fetch(
+        "/login",
+        {
+            method: "POST",
+            headers: {
+                "Content-Type":
+                    "application/json"
+            },
+            body: JSON.stringify({
+                nome,
+                senha
+            })
+        }
+    );
 
     const dados =
         await resposta.json();
 
     if (dados.id) {
-
         localStorage.setItem("userId", dados.id);
         localStorage.setItem("userNome", dados.nome);
         localStorage.setItem("tipo", dados.tipo);
         localStorage.setItem("user", JSON.stringify(dados));
 
-        window.location.href = "/dashboard.html";
-
+        window.location.href =
+            "/dashboard.html";
     } else {
         alert(dados.erro);
     }
 }
 
-
 async function carregarUsuarios() {
-
     const req =
         await fetch(`${API}/users`);
 
@@ -72,8 +72,8 @@ async function carregarUsuarios() {
     tbody.innerHTML = "";
 
     users.forEach(user => {
-
-        const isAdmin = user.tipo === "admin";
+        const isAdmin =
+            user.tipo === "admin";
 
         const avatar = isAdmin
             ? "/avatar/admin.png"
@@ -81,23 +81,19 @@ async function carregarUsuarios() {
 
         tbody.innerHTML += `
             <tr>
-
                 <td>
                     <img 
                         src="${avatar}" 
-                        width="40" 
-                        height="40" 
+                        width="40"
+                        height="40"
                         style="border-radius:50%; object-fit:cover;"
                         onerror="this.src='/avatar/default.png'"
                     />
                 </td>
 
                 <td>${user.id}</td>
-
                 <td>${user.nome}</td>
-
                 <td>${user.descricao}</td>
-
                 <td>${user.saldo}</td>
 
                 <td>
@@ -107,18 +103,22 @@ async function carregarUsuarios() {
                         : '<span class="badge-user">USER</span>'
                     }
                 </td>
-
             </tr>
         `;
     });
 
-    const currentUser = JSON.parse(
-        localStorage.getItem("user")
-    );
+    const currentUser =
+        JSON.parse(
+            localStorage.getItem("user")
+        );
 
-    if (currentUser && currentUser.tipo === "admin") {
-
-        document.getElementById("painelAdmin").innerHTML = `
+    if (
+        currentUser &&
+        currentUser.tipo === "admin"
+    ) {
+        document.getElementById(
+            "painelAdmin"
+        ).innerHTML = `
             <a href="admin.html">
                 Painel Admin
             </a>
@@ -126,12 +126,11 @@ async function carregarUsuarios() {
     }
 }
 
-
 async function transferir() {
-
-    const user = JSON.parse(
-        localStorage.getItem("user")
-    );
+    const user =
+        JSON.parse(
+            localStorage.getItem("user")
+        );
 
     const toId =
         document.getElementById("toId").value;
@@ -139,35 +138,31 @@ async function transferir() {
     const valor =
         document.getElementById("valor").value;
 
-    const req = await fetch(
-        `${API}/transferir`,
-        {
-            method: "POST",
+    const req =
+        await fetch(
+            "/transferir",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type":
+                        "application/json"
+                },
+                body: JSON.stringify({
+                    fromId: user.id,
+                    toId,
+                    valor
+                })
+            }
+        );
 
-            headers: {
-                "Content-Type":
-                    "application/json"
-            },
-
-            body: JSON.stringify({
-                fromId: user.id,
-                toId,
-                valor
-            })
-        }
-    );
-
-    const data = await req.json();
-
-    alert(JSON.stringify(data));
+    await mostrarResposta(req);
 }
 
-
 async function alterarCargo() {
-
-    const admin = JSON.parse(
-        localStorage.getItem("user")
-    );
+    const admin =
+        JSON.parse(
+            localStorage.getItem("user")
+        );
 
     const userId =
         document.getElementById("userId").value;
@@ -176,36 +171,33 @@ async function alterarCargo() {
         document.getElementById("novoTipo").value;
 
     if (isDalmazoId(userId)) {
-        alert("Cargo do Dalmazo é protegido.");
+        alert(
+            "Cargo do Dalmazo é protegido."
+        );
         return;
     }
 
-    const req = await fetch(
-        `${API}/alterar-cargo`,
-        {
-            method: "POST",
+    const req =
+        await fetch(
+            "/alterar-cargo",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type":
+                        "application/json"
+                },
+                body: JSON.stringify({
+                    adminId: admin.id,
+                    userId,
+                    novoTipo
+                })
+            }
+        );
 
-            headers: {
-                "Content-Type":
-                    "application/json"
-            },
-
-            body: JSON.stringify({
-                adminId: admin.id,
-                userId,
-                novoTipo
-            })
-        }
-    );
-
-    const data = await req.json();
-
-    alert(JSON.stringify(data));
+    await mostrarResposta(req);
 }
 
-
 async function registrar() {
-
     const nome =
         document.getElementById("novoNome").value;
 
@@ -217,34 +209,30 @@ async function registrar() {
         return;
     }
 
-    const req = await fetch(
-        "/register",
-        {
-            method: "POST",
+    const req =
+        await fetch(
+            "/register",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type":
+                        "application/json"
+                },
+                body: JSON.stringify({
+                    nome,
+                    senha
+                })
+            }
+        );
 
-            headers: {
-                "Content-Type":
-                    "application/json"
-            },
-
-            body: JSON.stringify({
-                nome,
-                senha
-            })
-        }
-    );
-
-    const data = await req.json();
-
-    alert(JSON.stringify(data));
+    await mostrarResposta(req);
 }
 
-
 async function transferirAdmin() {
-
-    const admin = JSON.parse(
-        localStorage.getItem("user")
-    );
+    const admin =
+        JSON.parse(
+            localStorage.getItem("user")
+        );
 
     const fromId =
         document.getElementById("fromId").value;
@@ -255,36 +243,32 @@ async function transferirAdmin() {
     const valor =
         document.getElementById("valor").value;
 
-    const req = await fetch(
-        "/admin-transfer",
-        {
-            method: "POST",
+    const req =
+        await fetch(
+            "/admin-transfer",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type":
+                        "application/json"
+                },
+                body: JSON.stringify({
+                    adminId: admin.id,
+                    fromId,
+                    toId,
+                    valor
+                })
+            }
+        );
 
-            headers: {
-                "Content-Type":
-                    "application/json"
-            },
-
-            body: JSON.stringify({
-                adminId: admin.id,
-                fromId,
-                toId,
-                valor
-            })
-        }
-    );
-
-    const data = await req.json();
-
-    alert(JSON.stringify(data));
+    await mostrarResposta(req);
 }
 
-
 async function alterarSenha() {
-
-    const admin = JSON.parse(
-        localStorage.getItem("user")
-    );
+    const admin =
+        JSON.parse(
+            localStorage.getItem("user")
+        );
 
     const userId =
         document.getElementById("senhaUserId").value;
@@ -293,39 +277,37 @@ async function alterarSenha() {
         document.getElementById("novaSenhaAdmin").value;
 
     if (isDalmazoId(userId)) {
-        alert("Senha do Dalmazo é protegida.");
+        alert(
+            "Senha do Dalmazo é protegida."
+        );
         return;
     }
 
-    const req = await fetch(
-        "/alterar-senha",
-        {
-            method: "POST",
+    const req =
+        await fetch(
+            "/alterar-senha",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type":
+                        "application/json"
+                },
+                body: JSON.stringify({
+                    adminId: admin.id,
+                    userId,
+                    novaSenha
+                })
+            }
+        );
 
-            headers: {
-                "Content-Type":
-                    "application/json"
-            },
-
-            body: JSON.stringify({
-                adminId: admin.id,
-                userId,
-                novaSenha
-            })
-        }
-    );
-
-    const data = await req.json();
-
-    alert(JSON.stringify(data));
+    await mostrarResposta(req);
 }
 
-
 async function adminCriarUsuario() {
-
-    const admin = JSON.parse(
-        localStorage.getItem("user")
-    );
+    const admin =
+        JSON.parse(
+            localStorage.getItem("user")
+        );
 
     const nome =
         document.getElementById("adminNovoNome").value;
@@ -347,73 +329,65 @@ async function adminCriarUsuario() {
         return;
     }
 
-    const req = await fetch(
-        "/admin-create-user",
-        {
-            method: "POST",
+    const req =
+        await fetch(
+            "/admin-create-user",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type":
+                        "application/json"
+                },
+                body: JSON.stringify({
+                    adminId: admin.id,
+                    nome,
+                    senha,
+                    descricao,
+                    saldo,
+                    tipo
+                })
+            }
+        );
 
-            headers: {
-                "Content-Type":
-                    "application/json"
-            },
-
-            body: JSON.stringify({
-                adminId: admin.id,
-                nome,
-                senha,
-                descricao,
-                saldo,
-                tipo
-            })
-        }
-    );
-
-    const data = await req.json();
-
-    alert(JSON.stringify(data));
+    await mostrarResposta(req);
 }
 
-
 function logout() {
-
     localStorage.removeItem("user");
-
     window.location = "/";
 }
 
-
 async function deletarUsuario() {
-
-    const admin = JSON.parse(
-        localStorage.getItem("user")
-    );
+    const admin =
+        JSON.parse(
+            localStorage.getItem("user")
+        );
 
     const userId =
         document.getElementById("deleteUserId").value;
 
     if (isDalmazoId(userId)) {
-        alert("Usuário protegido pelo sistema.");
+        alert(
+            "Usuário protegido pelo sistema."
+        );
         return;
     }
 
-    const req = await fetch(
-        "/delete-user",
-        {
-            method: "POST",
+    const req =
+        await fetch(
+            "/delete-user",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type":
+                        "application/json"
+                },
+                body: JSON.stringify({
+                    adminId: admin.id,
+                    userId
+                })
+            }
+        );
 
-            headers: {
-                "Content-Type":
-                    "application/json"
-            },
-
-            body: JSON.stringify({
-                adminId: admin.id,
-                userId
-            })
-        }
-    );
-
-    const data = await req.json();
-
-    alert(JSON.stringify(data));
+    await mostrarResposta(req);
 }
