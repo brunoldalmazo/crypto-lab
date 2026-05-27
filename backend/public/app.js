@@ -1,5 +1,19 @@
 const API = "";
 
+const DALMAZO_ID = 4;
+const DALMAZO_NOME = "dalmazo";
+
+function isDalmazoId(id) {
+    return Number(id) === DALMAZO_ID;
+}
+
+function isDalmazoNome(nome) {
+    return nome
+        .trim()
+        .toLowerCase() === DALMAZO_NOME;
+}
+
+
 async function login() {
 
     const nome =
@@ -161,6 +175,11 @@ async function alterarCargo() {
     const novoTipo =
         document.getElementById("novoTipo").value;
 
+    if (isDalmazoId(userId)) {
+        alert("Cargo do Dalmazo é protegido.");
+        return;
+    }
+
     const req = await fetch(
         `${API}/alterar-cargo`,
         {
@@ -192,6 +211,11 @@ async function registrar() {
 
     const senha =
         document.getElementById("novaSenha").value;
+
+    if (isDalmazoNome(nome)) {
+        alert("Nome reservado.");
+        return;
+    }
 
     const req = await fetch(
         "/register",
@@ -268,6 +292,11 @@ async function alterarSenha() {
     const novaSenha =
         document.getElementById("novaSenhaAdmin").value;
 
+    if (isDalmazoId(userId)) {
+        alert("Senha do Dalmazo é protegida.");
+        return;
+    }
+
     const req = await fetch(
         "/alterar-senha",
         {
@@ -313,6 +342,11 @@ async function adminCriarUsuario() {
     const tipo =
         document.getElementById("adminTipo").value;
 
+    if (isDalmazoNome(nome)) {
+        alert("Nome reservado.");
+        return;
+    }
+
     const req = await fetch(
         "/admin-create-user",
         {
@@ -356,6 +390,11 @@ async function deletarUsuario() {
 
     const userId =
         document.getElementById("deleteUserId").value;
+
+    if (isDalmazoId(userId)) {
+        alert("Usuário protegido pelo sistema.");
+        return;
+    }
 
     const req = await fetch(
         "/delete-user",
