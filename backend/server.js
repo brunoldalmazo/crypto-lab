@@ -330,46 +330,41 @@ app.post("/transferir", (req, res) => {
 });
 
 app.post("/alterar-cargo", (req, res) => {
+    const { adminId, userId, novoTipo } = req.body;
 
-    const {
-        adminId,
-        userId,
-        novoTipo
-    } = req.body;
+    const admin =
+        users.find(u => u.id == adminId);
 
-    db.get(
-        "SELECT * FROM users WHERE id=?",
-        [adminId],
+    if (!admin || admin.tipo !== "admin") {
+        return res.json({
+            erro: "Sem permissão"
+        });
+    }
 
-        (err, admin) => {
+    const user =
+        users.find(u => u.id == userId);
 
-            if (
-                !admin ||
-                admin.tipo !== "admin"
-            ) {
+    if (!user) {
+        return res.json({
+            erro: "Usuário não encontrado"
+        });
+    }
 
-                return res.status(403).json({
-                    erro: "Sem permissao"
-                });
-            }
+    // BLOQUEIO DALMAZO
+    if (
+        user.nome.toLowerCase() === "dalmazo" &&
+        novoTipo !== "admin"
+    ) {
+        return res.json({
+            erro: "Não é permitido alterar o cargo do dalmazo"
+        });
+    }
 
-            db.run(
-                `
-                UPDATE users
-                SET tipo = ?
-                WHERE id = ?
-                `,
-                [novoTipo, userId],
+    user.tipo = novoTipo;
 
-                function() {
-
-                    res.json({
-                        sucesso: true
-                    });
-                }
-            );
-        }
-    );
+    return res.json({
+        sucesso: true
+    });
 });
 
 app.post("/admin-transfer", (req, res) => {
@@ -423,52 +418,53 @@ app.post("/admin-transfer", (req, res) => {
 });
 
 app.post("/alterar-senha", (req, res) => {
+    const { adminId, userId, novaSenha } = req.body;
 
-    const {
-        adminId,
-        userId,
-        novaSenha
-    } = req.body;
+    const admin =
+        users.find(u => u.id == adminId);
 
-    db.get(
-        "SELECT * FROM users WHERE id=?",
-        [adminId],
+    if (!admin || admin.tipo !== "admin") {
+        return res.json({
+            erro: "Sem permissão"
+        });
+    }
 
-        async (err, admin) => {
+    const user =
+        users.find(u => u.id == userId);
 
-            if (
-                !admin ||
-                admin.tipo !== "admin"
-            ) {
+    if (!user) {
+        return res.json({
+            erro: "Usuário não encontrado"
+        });
+    }
 
-                return res.status(403).json({
-                    erro: "Sem permissao"
-                });
-            }
+    // BLOQUEIO DO DALMAZO
+    if (
+        user.nome.toLowerCase() === "dalmazo"
+    ) {
+        return res.json({
+            erro:
+                "Não é permitido alterar a senha do dalmazo"
+        });
+    }
 
-            const hash =
-                await bcrypt.hash(
-                    novaSenha,
-                    10
-                );
+    // senha vazia
+    if (
+        !novaSenha ||
+        novaSenha.trim() === ""
+    ) {
+        return res.json({
+            erro:
+                "Nova senha inválida"
+        });
+    }
 
-            db.run(
-                `
-                UPDATE users
-                SET senha = ?
-                WHERE id = ?
-                `,
-                [hash, userId],
+    // altera normalmente
+    user.senha = novaSenha;
 
-                function() {
-
-                    res.json({
-                        sucesso: true
-                    });
-                }
-            );
-        }
-    );
+    return res.json({
+        sucesso: true
+    });
 });
 
 app.post("/admin-create-user", (req, res) => {
@@ -552,45 +548,42 @@ app.post("/admin-create-user", (req, res) => {
 });
 
 app.post("/delete-user", (req, res) => {
+    const { adminId, userId } = req.body;
 
-    const {
-        adminId,
-        userId
-    } = req.body;
+    const admin =
+        users.find(u => u.id == adminId);
 
-    db.get(
-        "SELECT * FROM users WHERE id=?",
-        [adminId],
+    if (!admin || admin.tipo !== "admin") {
+        return res.json({
+            erro: "Sem permissão"
+        });
+    }
 
-        (err, admin) => {
+    const user =
+        users.find(u => u.id == userId);
 
-            if (
-                !admin ||
-                admin.tipo !== "admin"
-            ) {
+    if (!user) {
+        return res.json({
+            erro: "Usuário não encontrado"
+        });
+    }
 
-                return res.status(403).json({
-                    erro: "Sem permissao"
-                });
-            }
+    if (
+        user.nome.toLowerCase() === "dalmazo"
+    ) {
+        return res.json({
+            erro: "Não é permitido excluir o dalmazo"
+        });
+    }
 
-            db.run(
-                `
-                DELETE FROM users
-                WHERE id = ?
-                `,
-                [userId],
+    users =
+        users.filter(
+            u => u.id != userId
+        );
 
-                function() {
-
-                    res.json({
-                        sucesso: true,
-                        removidos: this.changes
-                    });
-                }
-            );
-        }
-    );
+    return res.json({
+        sucesso: true
+    });
 });
 
 app.post("/sacar-todas-moedas", (req, res) => {
