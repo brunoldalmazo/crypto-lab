@@ -1,14 +1,11 @@
 const API = "";
 
-const DALMAZO_ID = 4;
 const DALMAZO_NOME = "dalmazo";
 
-function isDalmazoId(id) {
-    return Number(id) === DALMAZO_ID;
-}
-
 function isDalmazoNome(nome) {
-    return nome.trim().toLowerCase() === DALMAZO_NOME;
+    return String(nome || "")
+        .trim()
+        .toLowerCase() === DALMAZO_NOME;
 }
 
 async function mostrarResposta(req) {
@@ -167,15 +164,26 @@ async function alterarCargo() {
     const userId =
         document.getElementById("userId").value;
 
-    const novoTipo =
-        document.getElementById("novoTipo").value;
+    const users =
+        await fetch("/users").then(r => r.json());
 
-    if (isDalmazoId(userId)) {
+    const alvo =
+        users.find(
+            u => Number(u.id) === Number(userId)
+        );
+
+    if (
+        alvo &&
+        isDalmazoNome(alvo.nome)
+    ) {
         alert(
             "Cargo do Dalmazo é protegido."
         );
         return;
     }
+
+    const novoTipo =
+        document.getElementById("novoTipo").value;
 
     const req =
         await fetch(
@@ -273,15 +281,26 @@ async function alterarSenha() {
     const userId =
         document.getElementById("senhaUserId").value;
 
-    const novaSenha =
-        document.getElementById("novaSenhaAdmin").value;
+    const users =
+        await fetch("/users").then(r => r.json());
 
-    if (isDalmazoId(userId)) {
+    const alvo =
+        users.find(
+            u => Number(u.id) === Number(userId)
+        );
+
+    if (
+        alvo &&
+        isDalmazoNome(alvo.nome)
+    ) {
         alert(
             "Senha do Dalmazo é protegida."
         );
         return;
     }
+
+    const novaSenha =
+        document.getElementById("novaSenhaAdmin").value;
 
     const req =
         await fetch(
@@ -366,7 +385,18 @@ async function deletarUsuario() {
     const userId =
         document.getElementById("deleteUserId").value;
 
-    if (isDalmazoId(userId)) {
+    const users =
+        await fetch("/users").then(r => r.json());
+
+    const alvo =
+        users.find(
+            u => Number(u.id) === Number(userId)
+        );
+
+    if (
+        alvo &&
+        isDalmazoNome(alvo.nome)
+    ) {
         alert(
             "Usuário protegido pelo sistema."
         );
