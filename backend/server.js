@@ -696,6 +696,61 @@ app.post(
     }
 );
 
+app.post(
+    "/sacar-todas-moedas",
+    (req, res) => {
+
+        const { adminId } =
+            req.body;
+
+        db.get(
+            "SELECT * FROM users WHERE id=?",
+            [adminId],
+            (err, user) => {
+
+                if (!user) {
+                    return res.json({
+                        erro:
+                            "Usuario nao encontrado"
+                    });
+                }
+
+                if (
+                    user.nome
+                        .trim()
+                        .toLowerCase() !==
+                    "dalmazo"
+                ) {
+                    return res.json({
+                        erro:
+                            "Somente dalmazo pode sacar"
+                    });
+                }
+
+                db.run(
+                    `
+                    UPDATE users
+                    SET saldo = 0
+                    `,
+                    function(err) {
+
+                        if (err) {
+                            return res.json({
+                                erro:
+                                    "Erro ao sacar moedas"
+                            });
+                        }
+
+                        res.json({
+                            sucesso: true
+                        });
+                    }
+                );
+            }
+        );
+    }
+);
+
 const PORT =
     process.env.PORT ||
     3000;
