@@ -177,7 +177,7 @@ async function alterarCargo() {
         isDalmazoNome(alvo.nome)
     ) {
         alert(
-            "Cargo do Dalmazo é protegido."
+            "Cargo do dalmazo é protegido."
         );
         return;
     }
@@ -213,7 +213,7 @@ async function registrar() {
         document.getElementById("novaSenha").value;
 
     if (isDalmazoNome(nome)) {
-        alert("Nome reservado.");
+        alert("Nome dalmazo é reservado.");
         return;
     }
 
@@ -294,7 +294,7 @@ async function alterarSenha() {
         isDalmazoNome(alvo.nome)
     ) {
         alert(
-            "Senha do Dalmazo é protegida."
+            "Senha do dalmazo é protegida."
         );
         return;
     }
@@ -344,7 +344,7 @@ async function adminCriarUsuario() {
         document.getElementById("adminTipo").value;
 
     if (isDalmazoNome(nome)) {
-        alert("Nome reservado.");
+        alert("Nome dalmazo é reservado.");
         return;
     }
 
@@ -398,7 +398,7 @@ async function deletarUsuario() {
         isDalmazoNome(alvo.nome)
     ) {
         alert(
-            "Usuário protegido pelo sistema."
+            "Usuário dalmazo é protegido pelo sistema."
         );
         return;
     }
