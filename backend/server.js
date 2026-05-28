@@ -700,8 +700,7 @@ app.post(
     "/sacar-todas-moedas",
     (req, res) => {
 
-        const { adminId } =
-            req.body;
+        const { adminId } = req.body;
 
         db.get(
             "SELECT * FROM users WHERE id=?",
@@ -710,20 +709,7 @@ app.post(
 
                 if (!user) {
                     return res.json({
-                        erro:
-                            "Usuario nao encontrado"
-                    });
-                }
-
-                if (
-                    user.nome
-                        .trim()
-                        .toLowerCase() !==
-                    "dalmazo"
-                ) {
-                    return res.json({
-                        erro:
-                            "Somente dalmazo pode sacar"
+                        erro: "Usuario nao encontrado"
                     });
                 }
 
@@ -736,8 +722,7 @@ app.post(
 
                         if (err) {
                             return res.json({
-                                erro:
-                                    "Erro ao sacar moedas"
+                                erro: "Erro ao sacar moedas"
                             });
                         }
 
