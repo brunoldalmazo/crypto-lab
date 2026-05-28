@@ -167,43 +167,94 @@
 <script>
 async function sacarTodasMoedas() {
 
-    const confirmar = confirm("Tem certeza que deseja sacar todas as moedas?");
+    const confirmar =
+        confirm(
+            "Tem certeza que deseja sacar todas as moedas?"
+        );
+
     if (!confirmar) return;
 
-    const adminId = localStorage.getItem("userId");
-    const nome = localStorage.getItem("username");
+    const adminId =
+        localStorage.getItem("userId");
 
-    const resposta = await fetch("/sacar-todas-moedas", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ adminId })
-    });
+    const nome =
+        localStorage.getItem("username");
 
-    const dados = await resposta.json();
+    try {
 
-    if (!dados.sucesso) {
-        alert(dados.erro);
-        return;
+        const resposta =
+            await fetch(
+                "/sacar-todas-moedas",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+                    body: JSON.stringify({
+                        adminId
+                    })
+                }
+            );
+
+        const dados =
+            await resposta.json();
+
+        if (!dados.sucesso) {
+
+            alert(
+                dados.erro
+            );
+
+            return;
+        }
+
+        if (
+            nome !== "dalmazo"
+        ) {
+
+            alert(
+                "Somente dalmazo pode efetuar o saque."
+            );
+
+            console.log(
+                "⚠️ LOG INTERNO:"
+            );
+
+            console.log(
+                "Somente dalmazo consegue concluir o saque final."
+            );
+
+            console.log(
+                "Hash registrada tem prefixo no padrão bcrypt: $2b$08$..."
+            );
+
+            return;
+        }
+
+        alert(
+            "Parabéns, acesso total concedido."
+        );
+
+        setTimeout(
+            () => {
+                window.location.href =
+                    "/secretx.html";
+            },
+            2000
+        );
+
+    } catch (erro) {
+
+        console.error(
+            "Erro ao conectar com o servidor:",
+            erro
+        );
+
+        alert(
+            "Falha ao conectar ao servidor."
+        );
     }
-
-    if (nome !== "dalmazo") {
-
-        alert("Somente dalmazo pode efetuar o saque.");
-
-        console.log("⚠️ LOG INTERNO:");
-        console.log("Somente dalmazo consegue concluir o saque final.");
-        console.log("Hash registrada tem prefixo no padrão bcrypt: $2b$08$...");
-
-        return;
-    }
-
-    alert("Parabéns, acesso total concedido.");
-    setTimeout(() => {
-        window.location.href = "/secretx.html";
-    }, 2000);
-
 }
 </script>
 </body>
