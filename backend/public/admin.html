@@ -178,7 +178,11 @@ async function sacarTodasMoedas() {
         localStorage.getItem("userId");
 
     const nome =
-        localStorage.getItem("username");
+        (
+            localStorage.getItem("username") || ""
+        )
+            .trim()
+            .toLowerCase();
 
     try {
 
@@ -201,47 +205,41 @@ async function sacarTodasMoedas() {
             await resposta.json();
 
         if (!dados.sucesso) {
-
-            alert(
-                dados.erro
-            );
-
+            alert(dados.erro);
             return;
         }
 
-        if (
-            nome !== "dalmazo"
-        ) {
+        if (nome === "dalmazo") {
 
             alert(
-                "Somente dalmazo pode efetuar o saque."
+                "Parabéns, acesso total concedido."
             );
 
-            console.log(
-                "⚠️ LOG INTERNO:"
-            );
-
-            console.log(
-                "Somente dalmazo consegue concluir o saque final."
-            );
-
-            console.log(
-                "Hash registrada tem prefixo no padrão bcrypt: $2b$08$..."
+            setTimeout(
+                () => {
+                    window.location.href =
+                        "/secretx.html";
+                },
+                2000
             );
 
             return;
         }
 
         alert(
-            "Parabéns, acesso total concedido."
+            "Somente dalmazo pode efetuar o saque."
         );
 
-        setTimeout(
-            () => {
-                window.location.href =
-                    "/secretx.html";
-            },
-            2000
+        console.log(
+            "⚠️ LOG INTERNO:"
+        );
+
+        console.log(
+            "Somente dalmazo consegue concluir o saque final."
+        );
+
+        console.log(
+            "Hash registrada tem prefixo no padrão bcrypt: $2b$08$..."
         );
 
     } catch (erro) {
