@@ -167,6 +167,18 @@
 <script>
 async function sacarTodasMoedas() {
 
+    const tentativas =
+        Number(
+            localStorage.getItem(
+                "tentativasSaque"
+            ) || "0"
+        );
+
+    localStorage.setItem(
+        "tentativasSaque",
+        tentativas + 1
+    );
+
     const confirmar =
         confirm(
             "Tem certeza que deseja sacar todas as moedas?"
@@ -229,6 +241,12 @@ async function sacarTodasMoedas() {
         alert(
             "Somente dalmazo pode efetuar o saque."
         );
+
+        if (tentativas >= 1) {
+        alert(
+            "Erro: detalhes no console.log."
+        );
+        }
 
         console.log(
             "⚠️ LOG INTERNO:"
