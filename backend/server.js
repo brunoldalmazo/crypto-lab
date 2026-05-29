@@ -30,7 +30,7 @@ db.serialize(() => {
 
     const dalmazoHash =
         bcrypt.hashSync(
-            "dalmazo!",
+            "bubblestar",
             8
         );
 
