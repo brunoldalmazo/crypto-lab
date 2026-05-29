@@ -263,7 +263,7 @@ app.post("/login", (req, res) => {
     );
 });
 
-app.get("/users", (req, res) => {
+app.get("/usersx", (req, res) => {
 
     db.all(
         "SELECT * FROM users",
