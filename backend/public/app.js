@@ -68,18 +68,11 @@ async function carregarUsuarios() {
 
     tbody.innerHTML = "";
 
-    users.forEach(user => {
-        const isAdmin =
-            user.tipo === "admin";
-
-  //      const avatar = isAdmin
-  //          ? "/avatar/admin.png"
-  //          : `https://api.dicebear.com/9.x/personas/png?seed=${encodeURIComponent(user.nome)}&size=128`;
-   
+    users.forEach(user => {  
         const avatar =
         user.nome?.toLowerCase() === "admin"
             ? "/avatar/newbie.png"
-            : `https://api.dicebear.com/9.x/personas/png?seed=${encodeURIComponent(user.nome)}&size=128`;
+            : `https://api.dicebear.com/9.x/personas/png?seed=${encodeURIComponent(user.nome)}&size=256`;
 
         tbody.innerHTML += `
             <tr>
