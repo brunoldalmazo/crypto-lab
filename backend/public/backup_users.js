@@ -45,7 +45,7 @@ const users = [
         saldo: 100,
         tipo: "admin",
         senha:
-            "???" /* Hash de senha com 8 caracteres se quebra 
+            "???" /* Hash de senha com 10 caracteres se quebra 
                   em menos de 1h por força bruta... será? */
     }
 ];
