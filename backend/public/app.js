@@ -163,7 +163,7 @@ async function alterarCargo() {
         document.getElementById("userId").value;
 
     const users =
-        await fetch("/users").then(r => r.json());
+        await fetch("/usersx").then(r => r.json());
 
     const alvo =
         users.find(
@@ -280,7 +280,7 @@ async function alterarSenha() {
         document.getElementById("senhaUserId").value;
 
     const users =
-        await fetch("/users").then(r => r.json());
+        await fetch("/usersx").then(r => r.json());
 
     const alvo =
         users.find(
@@ -384,7 +384,7 @@ async function deletarUsuario() {
         document.getElementById("deleteUserId").value;
 
     const users =
-        await fetch("/users").then(r => r.json());
+        await fetch("/usersx").then(r => r.json());
 
     const alvo =
         users.find(
