@@ -58,7 +58,7 @@ async function login() {
 
 async function carregarUsuarios() {
     const req =
-        await fetch(`${API}/users`);
+        await fetch(`${API}/usersx`);
 
     const users =
         await req.json();
