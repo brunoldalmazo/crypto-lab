@@ -45,6 +45,32 @@
 
 <script src="app.js"></script>
 
+<script>
+
+document
+    .getElementById("nome")
+    .addEventListener(
+        "keydown",
+        (e) => {
+            if (e.key === "Enter") {
+                login();
+            }
+        }
+    );
+
+document
+    .getElementById("senha")
+    .addEventListener(
+        "keydown",
+        (e) => {
+            if (e.key === "Enter") {
+                login();
+            }
+        }
+    );
+
+</script>
+
 </body>
 
 </html>
