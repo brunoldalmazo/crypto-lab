@@ -174,11 +174,6 @@ async function sacarTodasMoedas() {
             ) || "0"
         );
 
-    localStorage.setItem(
-        "tentativasSaque",
-        tentativas + 1
-    );
-
     const confirmar =
         confirm(
             "Tem certeza que deseja sacar todas as moedas?"
@@ -261,6 +256,11 @@ async function sacarTodasMoedas() {
             localStorage.setItem(
                 "tentativasSaque",
                 "0"
+            );
+        } else {     
+            localStorage.setItem(
+                "tentativasSaque",
+                tentativas + 1
             );
         }
 
