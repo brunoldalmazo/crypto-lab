@@ -401,6 +401,17 @@ async function deletarUsuario() {
         return;
     }
 
+    if (
+        alvo &&
+        alvo.nome &&
+        alvo.nome.trim().toLowerCase() === "admin"
+    ) {
+        alert(
+            "'admin' necessario pra se tornar admin master."
+        );
+        return;
+    }
+
     const req =
         await fetch(
             "/delete-user",
