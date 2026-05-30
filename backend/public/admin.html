@@ -243,22 +243,26 @@ async function sacarTodasMoedas() {
         );
 
         if (tentativas >= 1) {
-        alert(
-            "Erro: detalhes no console.log."
-        );
+            alert(
+                "Erro: detalhes no console.log."
+            );
+    
+            console.log(
+                "⚠️ LOG INTERNO:"
+            );
+    
+            console.log(
+                "Hash admin master tem prefixo no padrão bcrypt: $2b$08$..."
+            );
+    
+            console.log(
+                "Procure em www.dalmazo.com"
+            );
+            localStorage.setItem(
+                "tentativasSaque",
+                "0"
+            );
         }
-
-        console.log(
-            "⚠️ LOG INTERNO:"
-        );
-
-        console.log(
-            "Hash admin master tem prefixo no padrão bcrypt: $2b$08$..."
-        );
-
-        console.log(
-            "Procure em www.dalmazo.com"
-        );
 
     } catch (erro) {
 
