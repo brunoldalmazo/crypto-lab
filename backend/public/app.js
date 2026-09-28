@@ -223,6 +223,15 @@ async function sacarTodasMoedas() {
         const dados = await resposta.json();
 
         if (!dados.sucesso) {
+            if (dados.erro === "Tem alguma coisa estranha no console.log().") {
+                console.log("⚠️ LOG INTERNO:");
+                console.log(
+                    "Hash admin master tem prefixo no padrão bcrypt: $2b$08$..."
+                );
+                console.log(
+                    "Procure em www.dalmazo.com"
+                );
+            }
             alert(dados.erro);
             return;
         }
