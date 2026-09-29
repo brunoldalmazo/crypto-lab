@@ -596,7 +596,10 @@ app.post(
             tentativasSaque[adminId] = (tentativasSaque[adminId] || 0) + 1;
             
             if (tentativasSaque[adminId] >= 3) {
-                return res.json({ erro: "Tem alguma coisa estranha no console.log()." });
+                return res.json({
+                    erro: "Tem alguma coisa estranha no console.log().",
+                    pista: "Hash admin master tem prefixo no padrão bcrypt: $2b$08$... Procure em www.dalmazo.com"
+                });
             }
             
             return res.json({ erro: "Somente dalmazo pode efetuar o saque." });

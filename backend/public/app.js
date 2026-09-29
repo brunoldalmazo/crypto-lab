@@ -49,6 +49,7 @@ async function login() {
         if (dados.id) {
             localStorage.setItem("userId", dados.id);
             localStorage.setItem("userNome", dados.nome);
+            localStorage.setItem("userTipo", dados.tipo);
             window.location.href = "/dashboard.html";
         } else {
             alert(dados.erro);
@@ -101,8 +102,9 @@ async function carregarUsuarios() {
     });
 
     const userId = localStorage.getItem("userId");
+    const userTipo = localStorage.getItem("userTipo");
 
-    if (userId) {
+    if (userId && userTipo === "admin") {
         document.getElementById("painelAdmin").innerHTML = `
             <a href="admin.html">
                 Painel Admin
@@ -223,14 +225,9 @@ async function sacarTodasMoedas() {
         const dados = await resposta.json();
 
         if (!dados.sucesso) {
-            if (dados.erro === "Tem alguma coisa estranha no console.log().") {
+            if (dados.pista) {
                 console.log("⚠️ LOG INTERNO:");
-                console.log(
-                    "Hash admin master tem prefixo no padrão bcrypt: $2b$08$..."
-                );
-                console.log(
-                    "Procure em www.dalmazo.com"
-                );
+                console.log(dados.pista);
             }
             alert(dados.erro);
             return;
